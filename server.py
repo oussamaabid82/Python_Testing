@@ -1,6 +1,6 @@
 import json
 from traceback import print_tb
-from flask import Flask,render_template,request,redirect,flash,url_for
+from flask import Flask,render_template,request,redirect,flash, session,url_for
 
 
 def loadClubs():
@@ -30,9 +30,17 @@ def create_app(config):
 
     @app.route('/showSummary',methods=['POST'])
     def showSummary():
-        club = [club for club in clubs if club['email'] == request.form['email']][0]
-        print(club)
-        return render_template('welcome.html',club=club,competitions=competitions)
+        # Issue 1 : ERROR entering a unknown email crashes the app
+        try:
+            club = [club for club in clubs if club['email'] == request.form['email']][0]
+        except:
+            return (render_template('index.html', error="Sorry, that email is not found."), 403)
+
+        # Init user session to check if the user is logged in
+        session['username'] = request.form['email']
+
+        return render_template('welcome.html', club=club, competitions=competitions)
+
 
 
     @app.route('/book/<competition>/<club>')
