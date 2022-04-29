@@ -36,8 +36,8 @@ def create_app(config):
         except:
             return (render_template('index.html', error="Sorry, that email is not found."), 403)
 
-        # Init user session to check if the user is logged in
-        session['username'] = request.form['email']
+        # # Init user session to check if the user is logged in
+        # session['username'] = request.form['email']
 
         return render_template('welcome.html', club=club, competitions=competitions)
 
