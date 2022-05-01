@@ -1,7 +1,6 @@
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 
-
 """
 Listing all data to read
 """
