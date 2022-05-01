@@ -1,0 +1,22 @@
+{"test_clubs":[
+    {
+        "name":"test1 GUDLFT",
+        "email":"test1_email@gudlft.com",
+        "points":"20"
+    },
+    {
+        "name":"test2 GUDLFT",
+        "email":"test2_email@gudlft.com",
+        "points":"20"
+    },
+    {
+        "name":"test3 GUDLFT",
+        "email":"test3_email@gudlft.com",
+        "points":"3"
+    },
+    {
+        "name":"test4 GUDLFT",
+        "email":"test4_email@gudlft.com",
+        "points":"40"
+    }
+]}
