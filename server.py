@@ -11,6 +11,8 @@ DATA_COMPETITIONS = 'competitions'
 TEST_DATA_CLUBS = 'features/test_clubs'
 TEST_DATA_COMPETITIONS = 'features/test_competitions'
 
+# ISSUE4 : BUG: Clubs should not be able to use more than their points allowed
+MAX_PURCHASE = 12
 
 def loadFile(file_name):
     database_name = list(reversed(file_name.split('/')))
@@ -78,13 +80,30 @@ def create_app(config={}):
             club = [c for c in clubs if c['name'] == request.form['club']][0]
             placesRequired = int(request.form['places'])
 
+            # ISSUE3 : ajout d'une donnée pour le club. {'nom de la compétition': 'places déjà achetées'}
+            # L'utilisateur peut acheter 12 places en plusieurs fois
+
+            if str(competition['name']) not in club:
+                club[str(competition['name'])] = 0
+                
             # ISSUE2 : BUG: Clubs should not be able to use more than their points allowed
             if (
-                (int(placesRequired)*3) <= int(club['points'])
+                (int(placesRequired)) <= int(club['points'])
                 and int(placesRequired) >= 0
                 and int(placesRequired) <= int(competition['numberOfPlaces'])
             ):
+                # ISSUE4 : BUG: Clubs should not be able to use more than their points allowed
+                if int(club[str(competition['name'])]) + int(placesRequired) > MAX_PURCHASE:
+                    flash(f"You can order maximum {MAX_PURCHASE} places.")
+                    return render_template('booking.html', club=club, competition=competition)
 
+                competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+
+                # Incrémente 1 à la nouvelle donnée pour le club {'nom de la compétition': 'places déjà achetées + 1'}
+                # décompte le nombre de place des points du club
+                club[str(competition['name'])] += int(placesRequired)
+                club['points'] = int(club['points']) - int(placesRequired)
+                
                 flash('Great-booking complete!')
                 return render_template('welcome.html', club=club, competitions=competitions)
 
