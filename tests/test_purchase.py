@@ -1,11 +1,3 @@
-from . conftest import client
-
-
-"""
-/purchasePlaces
-"""
-
-
 def test_purchaseplaces_should_status_code_ok(client, first_club_fixture, firt_competition_past_fixture):
     response = client.post(
         '/purchasePlaces',
@@ -142,7 +134,6 @@ def test_cant_take_more_than_twelve_places(client, first_club_fixture, firt_comp
     )
     assert response.status_code == 200
     data = response.data.decode()
-    print(data)
     assert data.find("You can order maximum 12 places.") != -1
 
 

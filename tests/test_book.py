@@ -24,6 +24,28 @@ def test_book_user_is_logged_in(client, first_club_fixture, firt_competition_pas
 
 def test_book_user_is_not_logged_in(client, first_club_fixture, firt_competition_past_fixture):
     response = client.get(f"/book/{firt_competition_past_fixture['name']}/{first_club_fixture['name']}")
+    print(response)
     data = response.data.decode()
     assert response.status_code == 200
     assert data.find("You are not logged in") != -1
+
+
+"""
+ISSUE 5 : BUG: Booking places in past competitions
+"""
+
+
+def test_cannot_access_to_past_competition(client, first_club_fixture, firt_competition_past_fixture):
+    login = client.post('/showSummary', data=dict(email=first_club_fixture['email']), follow_redirects=True)
+    assert login.status_code == 200
+    response = client.get(f"/book/{firt_competition_past_fixture['name']}/{first_club_fixture['name']}")
+    assert response.status_code == 200
+    data = response.data.decode()
+    assert data.find("This competition is closed.") != -1
+
+
+def test_can_access_to_post_competition(client, first_club_fixture, second_competition_post_fixture):
+    login = client.post('/showSummary', data=dict(email=first_club_fixture['email']), follow_redirects=True)
+    assert login.status_code == 200
+    response = client.get(f"/book/{second_competition_post_fixture['name']}/{first_club_fixture['name']}")
+    assert response.status_code == 200

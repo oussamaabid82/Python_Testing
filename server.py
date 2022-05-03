@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 
@@ -63,14 +64,24 @@ def create_app(config={}):
 
     @app.route('/book/<competition>/<club>')
     def book(competition, club):
-        foundClub = [c for c in clubs if c['name'] == club][0]
-        foundCompetition = [c for c in competitions if c['name'] == competition][0]
-        if foundClub and foundCompetition:
-            return render_template('booking.html',club=foundClub,competition=foundCompetition)
-        else:
-            flash("Something went wrong-please try again")
-            return render_template('welcome.html', club=club, competitions=competitions)
+        if 'username' in session:
+            foundClub = [c for c in clubs if c['name'] == club][0]
+            foundCompetition = [c for c in competitions if c['name'] == competition][0]
 
+            # ISSUE5 : Booking places in past competitions
+            # Empeche l'utilisateur d'acceder à une compétition terminée
+
+            USER_DATETIME = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            if foundCompetition['date'] < USER_DATETIME:
+                flash("This competition is closed.")
+                return render_template('welcome.html', club=foundClub, competitions=competitions)
+
+            if foundClub and foundCompetition:
+                return render_template('booking.html', club=foundClub, competition=foundCompetition)
+            else:
+                flash("Something went wrong-please try again")
+                return render_template('welcome.html', club=club, competitions=competitions)
+        return 'You are not logged in'
 
     @app.route('/purchasePlaces', methods=['POST'])
     def purchasePlaces():
@@ -79,8 +90,16 @@ def create_app(config={}):
             competition = [c for c in competitions if c['name'] == request.form['competition']][0]
             club = [c for c in clubs if c['name'] == request.form['club']][0]
             placesRequired = int(request.form['places'])
+            
+            # ISSUE5 : Booking places in past competitions
+            # revérification des dates, si l'utilisateur s'est endormi et que minuit a passé...
 
-            # ISSUE3 : ajout d'une donnée pour le club. {'nom de la compétition': 'places déjà achetées'}
+            USER_DATETIME = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            if competition['date'] < USER_DATETIME:
+                flash('This competition is no more available.')
+                return render_template('welcome.html', club=club, competitions=competitions)
+
+            # ISSUE4 : ajout d'une donnée pour le club. {'nom de la compétition': 'places déjà achetées'}
             # L'utilisateur peut acheter 12 places en plusieurs fois
 
             if str(competition['name']) not in club:

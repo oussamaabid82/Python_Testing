@@ -16,6 +16,11 @@
        </ul>
     {% endif%}
     Points available: {{club['points']}}
+
+    {% if error %}
+        <div><br>{{error}}</div>
+    {% endif %}
+
     <h3>Competitions:</h3>
     <ul>
         {% for comp in competitions%}
