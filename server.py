@@ -145,10 +145,10 @@ def create_app(config={}):
 
         return 'You are not logged in'
     
-    # ajout du nombre de points par club
+    # FEATURE: ajout du nombre de points par club
     @app.route('/clubsboard')
     def clubsboard():
-        return render_template('board.html', clubs=clubs)
+        return render_template('clubsboard.html', clubs=clubs)
 
 
     @app.route('/logout')
