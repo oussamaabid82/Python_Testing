@@ -144,6 +144,12 @@ def create_app(config={}):
                 return render_template('booking.html', club=club, competition=competition)
 
         return 'You are not logged in'
+    
+    # ajout du nombre de points par club
+    @app.route('/clubsboard')
+    def clubsboard():
+        return render_template('board.html', clubs=clubs)
+
 
     @app.route('/logout')
     def logout():

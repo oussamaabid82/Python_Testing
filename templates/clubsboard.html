@@ -4,3 +4,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summary | GUDLFT Registration</title>
 </head>
+<body>
+    <h2>CLUB BOARD</h2><a href="{{url_for('index')}}">Retour login</a>
+
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+    <ul>
+   {% for message in messages %}
+        <li>{{message}}</li>
+    {% endfor %}
+   </ul>
+{% endif%}
+
+{% if error %}
+    <div><br>{{error}}</div>
+{% endif %}
+
+
+
+<table>
+    <thead>
+        <tr>
+            <th colspan="2">CLUB BOARD</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for club in clubs%}
+        <tr>
+            
+            <td>{{club['name']}}</td>
+            <td>{{club['points']}}</td>
+        
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{%endwith%}
+
+</body>
+</html>
