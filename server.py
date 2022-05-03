@@ -76,8 +76,14 @@ def create_app(config={}):
                 flash("This competition is closed.")
                 return render_template('welcome.html', club=foundClub, competitions=competitions)
 
+            # ISSUE6 : Ajout d'une vérification des points du club
+            if foundClub['points'] == 0:
+                flash("Your cannot book places anymore. You are out of points")
+                return render_template('welcome.html', club=foundClub, competitions=competitions)
+
             if foundClub and foundCompetition:
                 return render_template('booking.html', club=foundClub, competition=foundCompetition)
+
             else:
                 flash("Something went wrong-please try again")
                 return render_template('welcome.html', club=club, competitions=competitions)
@@ -90,7 +96,7 @@ def create_app(config={}):
             competition = [c for c in competitions if c['name'] == request.form['competition']][0]
             club = [c for c in clubs if c['name'] == request.form['club']][0]
             placesRequired = int(request.form['places'])
-            
+
             # ISSUE5 : Booking places in past competitions
             # revérification des dates, si l'utilisateur s'est endormi et que minuit a passé...
 
@@ -99,18 +105,19 @@ def create_app(config={}):
                 flash('This competition is no more available.')
                 return render_template('welcome.html', club=club, competitions=competitions)
 
-            # ISSUE4 : ajout d'une donnée pour le club. {'nom de la compétition': 'places déjà achetées'}
+            # ISSUE3 : ajout d'une donnée pour le club. {'nom de la compétition': 'places déjà achetées'}
             # L'utilisateur peut acheter 12 places en plusieurs fois
 
             if str(competition['name']) not in club:
                 club[str(competition['name'])] = 0
-                
+
             # ISSUE2 : BUG: Clubs should not be able to use more than their points allowed
             if (
-                (int(placesRequired)) <= int(club['points'])
+                (int(placesRequired)*3) <= int(club['points'])
                 and int(placesRequired) >= 0
                 and int(placesRequired) <= int(competition['numberOfPlaces'])
             ):
+
                 # ISSUE4 : BUG: Clubs should not be able to use more than their points allowed
                 if int(club[str(competition['name'])]) + int(placesRequired) > MAX_PURCHASE:
                     flash(f"You can order maximum {MAX_PURCHASE} places.")
@@ -121,8 +128,10 @@ def create_app(config={}):
                 # Incrémente 1 à la nouvelle donnée pour le club {'nom de la compétition': 'places déjà achetées + 1'}
                 # décompte le nombre de place des points du club
                 club[str(competition['name'])] += int(placesRequired)
-                club['points'] = int(club['points']) - int(placesRequired)
-                
+
+                # ISSUE6 : correctif déjà présent, le même que pour l'ISSUE 2 ?
+                club['points'] = int(club['points']) - (int(placesRequired)*3)
+
                 flash('Great-booking complete!')
                 return render_template('welcome.html', club=club, competitions=competitions)
 
