@@ -1,5 +1,5 @@
-from .conftest import client
-from ..server import loadFile
+from . conftest import client
+from .. server import loadFile
 
 
 def test_success_display_clubs_points(client, file_name_of_data_test):

@@ -26,6 +26,7 @@ def test_user_invalid_email_display_message(client):
     data = response.data.decode()
     assert data.find('Sorry, that email is not found.')
 
+
 def test_showsummary_without_login(client):
     response = client.get('/showSummary', follow_redirects=True)
     assert response.status_code == 405

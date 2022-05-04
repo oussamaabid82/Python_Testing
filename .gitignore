@@ -6,3 +6,4 @@ envrc
 __pycache__
 .flake8
 .coverage
+.pytest_cache

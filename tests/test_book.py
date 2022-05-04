@@ -49,7 +49,7 @@ def test_can_access_to_post_competition(client, first_club_fixture, second_compe
     assert login.status_code == 200
     response = client.get(f"/book/{second_competition_post_fixture['name']}/{first_club_fixture['name']}")
     assert response.status_code == 200
-    
+
 
 """
 ISSUE 6 : BUG: Point updates are not reflected
