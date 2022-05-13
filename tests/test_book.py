@@ -64,7 +64,7 @@ def test_cant_access_booking_if_no_point(client, third_club_fixture, second_comp
         data=dict(
             club=third_club_fixture['name'],
             competition=second_competition_post_fixture['name'],
-            places=1
+            places=3
         )
     )
     assert booking.status_code == 200

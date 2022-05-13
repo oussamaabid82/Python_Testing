@@ -1,5 +1,5 @@
 from . conftest import client
-from .. server import loadFile
+from ..app import loadFile
 
 
 def test_home_should_status_code_ok(client):

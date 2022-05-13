@@ -113,10 +113,10 @@ def create_app(config={}):
 
                 # Incrémente 1 à la nouvelle donnée pour le club {'nom de la compétition': 'places déjà achetées + 1'}
                 # décompte le nombre de place des points du club
-                club[str(competition['name'])] += placesRequired
+                club[str(competition['name'])] += int(placesRequired)
 
                 # ISSUE6 : correctif déjà présent, le même que pour l'ISSUE 2 ?
-                club['points'] = int(club['points']) - placesRequired * 3
+                club['points'] = int(club['points']) - int(placesRequired)
                 flash('Great-booking complete!')
                 return render_template('welcome.html', club=club, competitions=competitions)
 
